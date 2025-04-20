@@ -1,0 +1,52 @@
+﻿@model TtsMp3Demo.Models.TtsViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>TTSMP3 Demo</h2>
+
+<form asp-action="Index" method="post" class="mb-4">
+    <div class="form-group">
+        <label asp-for="Msg"></label>
+        <textarea asp-for="Msg" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Msg" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-2">
+        <label asp-for="Lang"></label>
+        <select asp-for="Lang" class="form-control" style="width:200px;">
+            <option value="Zhiyu">Zhiyu (中文)</option>
+            <option value="Joanna">Joanna (English)</option>
+            <option value="Matthew">Matthew (English)</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">轉換並產生 MP3</button>
+</form>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+else if (!string.IsNullOrEmpty(Model.Mp3Url))
+{
+    <div>
+        <p>合成成功！</p>
+        <!-- 指定 id, 之後用 JS 設定播放速率 -->
+        <audio id="audioPlayer" controls>
+            <source src="@Model.Mp3Url" type="audio/mpeg" />
+            您的瀏覽器不支援 audio 元素。
+        </audio>
+        <p><a href="@Model.Mp3Url" target="_blank">下載 MP3 檔案</a></p>
+
+        <!-- 這段 script 會在音訊元件載入完成後，將播放速率設為 0.75 -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var player = document.getElementById("audioPlayer");
+                if (player) {
+                    player.playbackRate = 0.75;
+                }
+            });
+        </script>
+    </div>
+}
